@@ -1,0 +1,3 @@
+npx create-next-app@latest agentia-world --typescript --tailwind --app
+cd agentia-world
+npm install gsap @gsap/react framer-motion @studio-freight/lenis three @react-three/fiber @react-three/drei aceternity-ui daisyui @magic-ui/react 
