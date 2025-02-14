@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RiAiGenerate, RiBrainLine, RiTeamLine, RiFlowChart } from 'react-icons/ri';
-import { fadeInUpAnimation, fadeInLeftAnimation, fadeInRightAnimation, scaleAnimation } from "@/utils/scrollAnimations";
+import { fadeInLeftAnimation, fadeInRightAnimation } from "@/utils/scrollAnimations";
 
 gsap.registerPlugin(ScrollTrigger);
 
