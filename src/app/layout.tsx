@@ -11,25 +11,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Agentia World",
     description: "Step into the future with Agentia World",
-    images: ['/icon.jpg'],
+    images: ['/icon.png'],
   },
   viewport: "width=device-width, initial-scale=1",
   themeColor: "#000000",
   icons: {
-    icon: [
-      {
-        url: "/icon.jpg",
-        href: "/icon.jpg",
-      },
-    ],
-    shortcut: ["/icon.jpg"],
-    apple: [
-      {
-        url: "/icon.jpg",
-        sizes: "180x180",
-        type: "image/jpg",
-      },
-    ],
+    icon: { url: '/icon.png', type: 'image/png' },
+    shortcut: { url: '/icon.png', type: 'image/png' },
+    apple: { url: '/icon.png', type: 'image/png' },
+    other: {
+      rel: 'apple-touch-icon-precomposed',
+      url: '/icon.png',
+    },
   },
 };
 
@@ -41,6 +34,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        <link rel="icon" href="/icon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/icon.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
