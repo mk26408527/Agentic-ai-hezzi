@@ -11,10 +11,26 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Agentia World",
     description: "Step into the future with Agentia World",
-    images: ['/og-image.jpg'],
+    images: ['/icon.jpg'],
   },
   viewport: "width=device-width, initial-scale=1",
-  themeColor: "#000000"
+  themeColor: "#000000",
+  icons: {
+    icon: [
+      {
+        url: "/icon.jpg",
+        href: "/icon.jpg",
+      },
+    ],
+    shortcut: ["/icon.jpg"],
+    apple: [
+      {
+        url: "/icon.jpg",
+        sizes: "180x180",
+        type: "image/jpg",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -25,6 +41,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.chatbaseConfig = {
+                chatbotId: "kRqT5euqzM8vZNeL_VKY_",
+              }
+            `
+          }}
+        />
         <script
           src="https://www.chatbase.co/embed.min.js"
           defer

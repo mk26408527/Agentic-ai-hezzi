@@ -15,7 +15,12 @@ interface Message {
 
 const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    { 
+      type: 'bot', 
+      content: "Welcome to Agentia World! I'm your AI assistant. How can I help you today?" 
+    }
+  ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -57,17 +62,13 @@ const AIChatbot = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`https://www.chatbase.co/api/v1/chat`, {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${CHATBASE_API_KEY}`,
         },
         body: JSON.stringify({
-          messages: [{ content: userMessage, role: "user" }],
-          chatId: CHATBOT_ID,
-          stream: false,
-          temperature: 0.7,
+          message: userMessage,
         }),
       });
 
@@ -76,12 +77,17 @@ const AIChatbot = () => {
       }
 
       const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       setMessages(prev => [...prev, { type: 'bot', content: data.response }]);
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, { 
         type: 'bot', 
-        content: "I apologize, but I'm having trouble connecting right now. Please try again later." 
+        content: "I apologize, but I'm having trouble connecting. Please try again later." 
       }]);
     } finally {
       setIsLoading(false);
@@ -92,8 +98,8 @@ const AIChatbot = () => {
     <>
       {/* Chatbot Toggle Button */}
       <motion.button
-        onClick={handleToggle}
-        className="fixed bottom-4 right-4 z-[60] w-14 h-14 md:w-16 md:h-16 bg-gradient-to-r from-cyber-blue to-cyber-green rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center group"
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-4 right-4 z-[60] w-14 h-14 md:w-16 md:h-16 bg-gradient-to-r from-cyber-blue to-neon-purple rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center group"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
@@ -107,15 +113,18 @@ const AIChatbot = () => {
         {isOpen && (
           <>
             {/* Backdrop */}
-            <div 
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[70]"
-              onClick={handleToggle}
+              onClick={() => setIsOpen(false)}
             />
             
             <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
+              initial={{ opacity: 0, y: 100, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 100, scale: 0.95 }}
               className="fixed bottom-[20px] right-[20px] w-[90vw] sm:w-[400px] h-[500px] bg-black border border-white/10 rounded-2xl shadow-2xl z-[80] overflow-hidden"
             >
               {/* Glowing Background Effect */}
@@ -124,22 +133,18 @@ const AIChatbot = () => {
               </div>
 
               {/* Chat Header */}
-              <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-cyber-blue to-cyber-green p-0.5">
+              <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-cyber-blue to-neon-purple p-0.5">
                 <div className="bg-black/90 px-4 py-3 flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyber-blue to-cyber-green p-0.5">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyber-blue to-neon-purple p-0.5">
                       <div className="w-full h-full rounded-[6px] bg-black flex items-center justify-center">
                         <RiRobot2Line className="text-lg text-white" />
                       </div>
                     </div>
-                    <h3 className="text-white font-bold">AI Assistant</h3>
+                    <h3 className="text-white font-bold">Agentia AI Assistant</h3>
                   </div>
                   <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleToggle();
-                    }}
+                    onClick={() => setIsOpen(false)}
                     className="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
                   >
                     <RiCloseLine className="text-2xl" />
@@ -160,7 +165,7 @@ const AIChatbot = () => {
                       <div
                         className={`max-w-[80%] p-0.5 rounded-2xl ${
                           message.type === 'user'
-                            ? 'bg-gradient-to-r from-cyber-blue to-cyber-green'
+                            ? 'bg-gradient-to-r from-cyber-blue to-neon-purple'
                             : 'bg-white/10'
                         }`}
                       >
@@ -169,7 +174,7 @@ const AIChatbot = () => {
                             ? 'bg-black/90'
                             : 'bg-black/50'
                         }`}>
-                          <p className="text-white/90">{message.content}</p>
+                          <p className="text-white/90 text-sm">{message.content}</p>
                         </div>
                       </div>
                     </div>
@@ -179,9 +184,9 @@ const AIChatbot = () => {
                       <div className="max-w-[80%] p-0.5 rounded-2xl bg-white/10">
                         <div className="rounded-[14px] p-3 bg-black/50">
                           <div className="flex gap-2">
-                            <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" />
-                            <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce [animation-delay:0.2s]" />
-                            <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce [animation-delay:0.4s]" />
+                            <div className="w-2 h-2 rounded-full bg-cyber-blue animate-bounce" />
+                            <div className="w-2 h-2 rounded-full bg-neon-purple animate-bounce [animation-delay:0.2s]" />
+                            <div className="w-2 h-2 rounded-full bg-cyber-green animate-bounce [animation-delay:0.4s]" />
                           </div>
                         </div>
                       </div>
@@ -206,7 +211,7 @@ const AIChatbot = () => {
                   />
                   <button
                     type="submit"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-gradient-to-r from-cyber-blue to-cyber-green p-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-gradient-to-r from-cyber-blue to-neon-purple p-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={isLoading}
                   >
                     <div className="w-full h-full rounded-[6px] bg-black flex items-center justify-center">

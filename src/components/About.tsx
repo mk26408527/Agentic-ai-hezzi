@@ -2,10 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Stats data
 const stats = [
@@ -47,48 +43,11 @@ const About = () => {
   });
 
   const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    const ctx = gsap.context(() => {
-      // Animate text elements on scroll with glitch effect
-      gsap.from(".about-text", {
-        y: 50,
-        opacity: 0,
-        stagger: 0.2,
-        duration: 1,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top center+=100",
-          end: "center center",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      // Animate stats on scroll with stagger
-      gsap.from(".stat-item", {
-        scale: 0.5,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.8,
-        scrollTrigger: {
-          trigger: ".stats-container",
-          start: "top center+=150",
-          end: "bottom center",
-          toggleActions: "play none none reverse",
-        },
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [isClient]);
 
   return (
     <section

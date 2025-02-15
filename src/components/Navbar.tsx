@@ -120,11 +120,13 @@ const Navbar = () => {
     }
   }, [controlNavbar, handleScroll]);
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const href = e.currentTarget.getAttribute('href');
+    if (href?.startsWith('#')) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView();
+      }
     }
   };
 
@@ -150,10 +152,7 @@ const Navbar = () => {
             <div className="flex items-center justify-between">
               <motion.a
                 href="#home"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection('#home');
-                }}
+                onClick={handleClick}
                 whileHover={{ scale: 1.05 }}
                 className="text-2xl font-bold bg-gradient-to-r from-cyan-500 to-purple-500 bg-clip-text text-transparent"
               >
@@ -166,10 +165,7 @@ const Navbar = () => {
                   <motion.a
                     key={item.name}
                     href={item.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(item.href);
-                    }}
+                    onClick={handleClick}
                     whileHover={{ scale: 1.1 }}
                     className="relative text-white/80 hover:text-white transition-colors"
                   >
@@ -259,10 +255,7 @@ const Navbar = () => {
                         animate="open"
                         exit="closed"
                         href={item.href}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToSection(item.href);
-                        }}
+                        onClick={handleClick}
                         className={`text-2xl font-semibold transition-colors relative group ${
                           activeSection === item.name.toLowerCase()
                             ? 'text-cyber-blue'
